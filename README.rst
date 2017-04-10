@@ -15,7 +15,7 @@ parameters to a function. You will write a lot code to do this, this made code b
 and ugly. So this libary let you get and check HTTP parameters like use ORM:
 
 You define the parameters in a class, and then use the instance of the class to pass
-to a function and someting else.
+to a function and something else.
 
 Without parameter
 ------------------
