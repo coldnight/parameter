@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-""" """
+"""Model and Argument."""
 from __future__ import print_function, division, unicode_literals
 
 import abc
