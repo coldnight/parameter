@@ -40,7 +40,7 @@ from tornado import web
 from parameter import Model, Argument
 from parameter import ArgumentError, ArgumentMissError, ArgumentInvalidError
 from parameter import types
-from parameter.adapter.tornado import TornadoAdapter
+from parameter.adapter import TornadoAdapter
 
 
 class DemoParameter(Model):
@@ -54,7 +54,7 @@ class DemoParameter(Model):
 class DemoHandler(web.RequestHandler):
     def get(self):
         try:
-            demo = DemoParameter(TornadoAdapter(self.request))
+            demo = DemoParameter(TornadoAdapter(self))
         except ArgumentError as e:
             if isinstance(e, ArgumentMissError):
                 self.set_status(405)
