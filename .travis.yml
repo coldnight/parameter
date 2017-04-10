@@ -1,0 +1,25 @@
+language: python
+python:
+    - 3.6
+
+env:
+    - TOXENV=py27
+    - TOXENV=py33
+    - TOXENV=py34
+    - TOXENV=py36
+    - TOXENV=flake8
+
+install:
+    - pip install tox
+    - travis_retry pip install codecov
+
+script: tox
+
+after_success:
+    # call codecov from project root
+    - codecov
+matrix:
+  include:
+      - python: 3.5
+        env:
+            - TOXENV=py35

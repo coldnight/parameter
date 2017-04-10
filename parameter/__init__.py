@@ -6,5 +6,9 @@ from __future__ import print_function, division, unicode_literals
 from .model import (Model, Argument, BaseAdapter, ArgumentError,
                     ArgumentMissError, ArgumentInvalidError)
 
+
+__version__ = "0.0.1"
+
+
 __all__ = ["ArgumentError", "ArgumentMissError", "ArgumentInvalidError",
            "Model", "Argument", "BaseAdapter"]
