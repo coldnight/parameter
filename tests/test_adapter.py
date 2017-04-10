@@ -24,7 +24,7 @@ class UserEntity(Model):
     password = Argument("password", types.String(max_len=64))
     name = Argument("name", types.Unicode(max_len=50))
     age = Argument("age", types.Integer, default=18)
-    badges = Argument("badge", types.String, multiple=True)
+    badges = Argument("badge", types.Unicode, multiple=True)
 
 
 class DemoHandler(web.RequestHandler):
@@ -44,8 +44,8 @@ class DemoHandler(web.RequestHandler):
             })
 
         self.write({
-            "username": entity.username,
-            "password": entity.password,
+            "username": entity.username.decode("utf8"),
+            "password": entity.password.decode('utf8'),
             "name": entity.name,
             "age": entity.age,
             "badges": entity.badges,
@@ -61,7 +61,7 @@ class TornadoAdapterTestCase(testing.AsyncHTTPTestCase):
     def _fetch_json(self, path, params=None):
         resp = self.fetch("/?" + urlencode(params or {}))
         self.assertEqual(resp.code, 200)
-        return json.loads(resp.body)
+        return json.loads(resp.body.decode('utf8'))
 
     def test_miss(self):
         data = self._fetch_json("/")
