@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/coldnight/parameter.svg?branch=master)](https://travis-ci.org/coldnight/parameter)
 [![Code Coverage](https://codecov.io/github/coldnight/parameter/coverage.svg?branch=master)](https://codecov.io/gh/coldnight/parameter)
+[![PyPi](https://img.shields.io/pypi/v/parameter.svg)](https://pypi.python.org/pypi/parameter)
 
 # Parameter
 
