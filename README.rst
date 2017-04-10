@@ -1,9 +1,9 @@
 .. image:: https://travis-ci.org/coldnight/parameter.svg?branch=master
     :target: https://travis-ci.org/coldnight/parameter
 .. image:: https://codecov.io/github/coldnight/parameter/coverage.svg?branch=master
-    :target: https://codecov.io/gh/coldnight/parameter)
+    :target: https://codecov.io/gh/coldnight/parameter
 .. image:: https://img.shields.io/pypi/v/parameter.svg
-    :target: https://pypi.python.org/pypi/parameter)
+    :target: https://pypi.python.org/pypi/parameter
 
 Parameter
 ##########
