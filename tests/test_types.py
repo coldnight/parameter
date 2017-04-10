@@ -28,6 +28,9 @@ class _TestAdapter(BaseAdapter):
     def get_argument(self, key, default):
         return self._info.get(key, default)
 
+    def get_arguments(self):
+        pass
+
 
 class _TestModel(Model):
     string = Argument("string", types.String)

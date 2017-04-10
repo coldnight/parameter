@@ -35,12 +35,21 @@ class ArgumentInvalidError(ArgumentError):
 class BaseAdapter(object):
 
     @abc.abstractmethod
-    def get_argument(self, name, default, *args, **kargs):
+    def get_argument(self, name, default, *args, **kwargs):
         """Returns the argument's value via ``name``.
 
         :param name: The name of the argument.
         :param default: The default value.
+        :raises: :exception:`ArgumentMissError`
+        :raises: :exception:`ArgumentInvalidError`
+        """
 
+    @abc.abstractmethod
+    def get_arguments(self, name, default, *args, **kwargs):
+        """Returns the argument's values via ``name``.
+
+        :param name: The name of the argument.
+        :param default: The default value.
         :raises: :exception:`ArgumentMissError`
         :raises: :exception:`ArgumentInvalidError`
         """
@@ -51,8 +60,8 @@ class Argument(object):
 
     _DEFAULT = []       # type: list
 
-    def __init__(self, name, type_, default=_DEFAULT, miss_message=None,
-                 invalid_message=None):
+    def __init__(self, name, type_, default=_DEFAULT, multiple=False,
+                 miss_message=None, invalid_message=None):
         """Initialize
 
         :param name:
@@ -60,9 +69,9 @@ class Argument(object):
         :param type_:
             The parameter's type, indicated using an instance which subclasses
             :class:`parameter.types.BaseType`.
-        :param default:
-            The default value.
         :type type_: :class:`parameter.types.BaseType`.
+        :param default: The default value.
+        :param multiple: This argument have multiple values.
         :param miss_message:
             The message of :exception:`ArgumentMissError`
         :param invalid_message:
@@ -71,6 +80,7 @@ class Argument(object):
         self.name = name
         self.type_ = type_() if inspect.isclass(type_) else type_
         self.default = default
+        self.multiple = multiple
         self.miss_message = miss_message
         self.invalid_message = invalid_message
 
@@ -78,6 +88,20 @@ class Argument(object):
     def is_init_default(cls, value):
         """Returns ``True`` if the ``value`` is the initial default."""
         return value is cls._DEFAULT
+
+    def convert(self, value):
+        """Check and convert the value to the specified type.
+
+        :raises: :exception:`ArgumentMissError`
+        :raises: :exception:`ArgumentInvalidError`
+        """
+        if self.is_init_default(value):
+            raise ArgumentMissError(self.miss_message)
+
+        try:
+            return self.type_.convert(value)
+        except ConvertError as e:
+            raise ArgumentInvalidError(self.invalid_message, e)
 
 
 class ModelMeta(type):
@@ -109,15 +133,14 @@ class Model(object):
         self._arguments = {}
 
         for attr, arg in self._meta_arguments:
-            val = self.adapter.get_argument(arg.name, arg.default)
+            if arg.multiple:
+                val = self.adapter.get_arguments(arg.name, arg.default)
+                val = [arg.convert(v) for v in val]
+            else:
+                val = self.adapter.get_argument(arg.name, arg.default)
+                val = arg.convert(val)
 
-            if arg.is_init_default(val):
-                raise ArgumentMissError(arg.miss_message)
-
-            try:
-                self._arguments[attr] = arg.type_.convert(val)
-            except ConvertError as e:
-                raise ArgumentInvalidError(arg.invalid_message, e)
+            self._arguments[attr] = val
 
     def __getattr__(self, key):
         return self._arguments[key]

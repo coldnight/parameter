@@ -22,8 +22,17 @@ class _TestAdapter(BaseAdapter):
             "datetime": "2011-11-11 11:11:11",
         }
 
+        self._multi = {
+            "test": [
+                "a", "b", "c"
+            ]
+        }
+
     def get_argument(self, key, default):
         return self._info.get(key, default)
+
+    def get_arguments(self, key, default):
+        return self._multi.get(key, [default])
 
 
 class ModelTestCase(unittest.TestCase):
@@ -84,3 +93,11 @@ class ModelTestCase(unittest.TestCase):
 
         model = _TestModel(_TestAdapter())
         self.assertEqual(model.null, "1", "%r" % model)
+
+    def test_multiple(self):
+        class _TestModel(Model):
+            multi = Argument("test", types.Unicode(max_len=4), default=1,
+                             multiple=True)
+
+        model = _TestModel(_TestAdapter())
+        self.assertListEqual(model.multi, ["a", "b", "c"])
