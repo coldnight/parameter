@@ -96,7 +96,7 @@ class Double(BaseType):
         try:
             return float(val)
         except ValueError as e:
-            raise MismatchError(e.message)
+            raise MismatchError(e.args[0])
 
 
 class Decimal(BaseType):
@@ -104,10 +104,13 @@ class Decimal(BaseType):
         self.context = context
 
     def convert(self, val):
+        if isinstance(val, six.binary_type):
+            val = val.decode("utf8")
+
         try:
             return decimal.Decimal(val, context=self.context)
         except decimal.InvalidOperation as e:
-            raise MismatchError(e.message)
+            raise MismatchError(e.args[0])
 
 
 class Datetime(BaseType):
@@ -115,10 +118,13 @@ class Datetime(BaseType):
         self.format = format
 
     def convert(self, val):
+        if isinstance(val, six.binary_type):
+            val = val.decode("utf8")
+
         try:
             return datetime.strptime(val, self.format)
         except ValueError as e:
-            raise MismatchError(e.message)
+            raise MismatchError(e.args[0])
 
 
 class Date(Datetime):
