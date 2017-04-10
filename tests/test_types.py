@@ -9,7 +9,7 @@ import datetime
 import unittest
 
 from parameter import Model, Argument, types, ArgumentInvalidError
-from parameter import BaseAdapter, ArgumentMissError
+from parameter import BaseAdapter
 
 
 class _TestAdapter(BaseAdapter):
