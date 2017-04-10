@@ -3,11 +3,81 @@
 """ """
 from __future__ import print_function, division, unicode_literals
 
+import abc
+import inspect
+
 import six
 
-from .argument import Argument
-from .adapter.base import ArgumentMissError, ArgumentInvalidError
 from .types import ConvertError
+
+
+class ArgumentError(Exception):
+    """Argument base Exception"""
+    pass
+
+
+class ArgumentMissError(ArgumentError):
+    pass
+
+
+class ArgumentInvalidError(ArgumentError):
+    def __init__(self, message, source):
+        """Initialize
+
+        :param message: Invalid message.
+        :param source: Source exception.
+        """
+        super(ArgumentInvalidError, self).__init__(message)
+        self.source = source
+
+
+@six.add_metaclass(abc.ABCMeta)
+class BaseAdapter(object):
+
+    @abc.abstractmethod
+    def get_argument(self, name, default, *args, **kargs):
+        """Returns the argument's value via ``name``.
+
+        :param name: The name of the argument.
+        :param default: The default value.
+
+        :raises: :exception:`ArgumentMissError`
+        :raises: :exception:`ArgumentInvalidError`
+        """
+
+
+class Argument(object):
+    """Represents a parameter in HTTP request."""
+
+    _DEFAULT = []       # type: list
+
+    def __init__(self, name, type_, default=_DEFAULT, miss_message=None,
+                 invalid_message=None):
+        """Initialize
+
+        :param name:
+            The name of this argument as represented in the HTTP request.
+        :param type_:
+            The parameter's type, indicated using an instance which subclasses
+            :class:`parameter.types.BaseType`.
+        :param default:
+            The default value.
+        :type type_: :class:`parameter.types.BaseType`.
+        :param miss_message:
+            The message of :exception:`ArgumentMissError`
+        :param invalid_message:
+            The message of :exception:`ArgumentInvalidError`
+        """
+        self.name = name
+        self.type_ = type_() if inspect.isclass(type_) else type_
+        self.default = default
+        self.miss_message = miss_message
+        self.invalid_message = invalid_message
+
+    @classmethod
+    def is_init_default(cls, value):
+        """Returns ``True`` if the ``value`` is the initial default."""
+        return value is cls._DEFAULT
 
 
 class ModelMeta(type):
@@ -32,9 +102,8 @@ class Model(object):
         :param adapter:
             The adapter to get argument,
             indicate using an instance which subclasses
-            :class:`~parameter.adapter.base.BaseAdapter`
-        :type adapter:
-            :class:`parameter.adapter.base.BaseAdapter`
+            :class:`BaseAdapter`
+        :type adapter: :class:`BaseAdapter`
         """
         self.adapter = adapter
         self._arguments = {}
@@ -47,8 +116,8 @@ class Model(object):
 
             try:
                 self._arguments[attr] = arg.type_.convert(val)
-            except ConvertError:
-                raise ArgumentInvalidError(arg.invalid_message)
+            except ConvertError as e:
+                raise ArgumentInvalidError(arg.invalid_message, e)
 
     def __getattr__(self, key):
         return self._arguments[key]

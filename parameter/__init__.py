@@ -3,11 +3,8 @@
 """Reexport"""
 from __future__ import print_function, division, unicode_literals
 
-from .adapter.base import (ArgumentError, ArgumentMissError,
-                           ArgumentInvalidError)
-from .model import Model
-from .argument import Argument
-
+from .model import (Model, Argument, BaseAdapter, ArgumentError,
+                    ArgumentMissError, ArgumentInvalidError)
 
 __all__ = ["ArgumentError", "ArgumentMissError", "ArgumentInvalidError",
-           "Model", "Argument"]
+           "Model", "Argument", "BaseAdapter"]

@@ -6,7 +6,7 @@ from __future__ import print_function, division, unicode_literals
 import unittest
 
 from parameter import Model, Argument, types, ArgumentInvalidError
-from parameter.adapter.base import BaseAdapter
+from parameter import BaseAdapter
 
 
 class _TestAdapter(BaseAdapter):
