@@ -31,8 +31,8 @@ class _TestAdapter(BaseAdapter):
     def get_argument(self, key, default):
         return self._info.get(key, default)
 
-    def get_arguments(self, key, default):
-        return self._multi.get(key, [default])
+    def get_arguments(self, key):
+        return self._multi.get(key)
 
 
 class ModelTestCase(unittest.TestCase):

@@ -13,7 +13,14 @@ from .types import ConvertError
 
 class ArgumentError(Exception):
     """Argument base Exception"""
-    pass
+    def __init__(self, message, name):
+        """Initialize
+
+        :param message: Invalid message.
+        :param name: Argument name.
+        """
+        super(ArgumentError, self).__init__(message)
+        self.name = name
 
 
 class ArgumentMissError(ArgumentError):
@@ -21,13 +28,14 @@ class ArgumentMissError(ArgumentError):
 
 
 class ArgumentInvalidError(ArgumentError):
-    def __init__(self, message, source):
+    def __init__(self, message, name, source):
         """Initialize
 
         :param message: Invalid message.
+        :param name: Argument name.
         :param source: Source exception.
         """
-        super(ArgumentInvalidError, self).__init__(message)
+        super(ArgumentInvalidError, self).__init__(message, name)
         self.source = source
 
 
@@ -45,11 +53,10 @@ class BaseAdapter(object):
         """
 
     @abc.abstractmethod
-    def get_arguments(self, name, default, *args, **kwargs):
+    def get_arguments(self, name, *args, **kwargs):
         """Returns the argument's values via ``name``.
 
         :param name: The name of the argument.
-        :param default: The default value.
         :raises: :exception:`ArgumentMissError`
         :raises: :exception:`ArgumentInvalidError`
         """
@@ -96,12 +103,12 @@ class Argument(object):
         :raises: :exception:`ArgumentInvalidError`
         """
         if self.is_init_default(value):
-            raise ArgumentMissError(self.miss_message)
+            raise ArgumentMissError(self.miss_message, self.name)
 
         try:
             return self.type_.convert(value)
         except ConvertError as e:
-            raise ArgumentInvalidError(self.invalid_message, e)
+            raise ArgumentInvalidError(self.invalid_message, self.name, e)
 
 
 class ModelMeta(type):
@@ -134,7 +141,7 @@ class Model(object):
 
         for attr, arg in self._meta_arguments:
             if arg.multiple:
-                val = self.adapter.get_arguments(arg.name, arg.default)
+                val = self.adapter.get_arguments(arg.name)
                 val = [arg.convert(v) for v in val]
             else:
                 val = self.adapter.get_argument(arg.name, arg.default)
