@@ -121,3 +121,8 @@ class Model(object):
 
     def __getattr__(self, key):
         return self._arguments[key]
+
+    def __repr__(self):
+        args = " ".join("<%s: %s>" % (attr, arg.type_.__class__.__name__)
+                        for attr, arg in self._meta_arguments)
+        return "<%s [%s]>" % (self.__class__.__name__, args)

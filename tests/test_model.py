@@ -6,7 +6,7 @@ from __future__ import print_function, division, unicode_literals
 import unittest
 
 from parameter import Model, Argument, types, ArgumentInvalidError
-from parameter import BaseAdapter
+from parameter import BaseAdapter, ArgumentMissError
 
 
 class _TestAdapter(BaseAdapter):
@@ -65,3 +65,22 @@ class ModelTestCase(unittest.TestCase):
 
         with self.assertRaises(ArgumentInvalidError):
             _TestModel(_TestAdapter())
+
+        try:
+            _TestModel(_TestAdapter())
+        except ArgumentInvalidError as e:
+            self.assertIsInstance(e.source, types.MaxlenExceedError)
+
+    def test_miss(self):
+        class _TestModel(Model):
+            null = Argument("null", types.Unicode(max_len=4))
+
+        with self.assertRaises(ArgumentMissError):
+            _TestModel(_TestAdapter())
+
+    def test_default(self):
+        class _TestModel(Model):
+            null = Argument("null", types.Unicode(max_len=4), default=1)
+
+        model = _TestModel(_TestAdapter())
+        self.assertEqual(model.null, "1", "%r" % model)

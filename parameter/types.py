@@ -36,7 +36,7 @@ class BaseType(object):
 
         :raises: :exception:`MismatchError`
         """
-        pass
+        pass    # pragma: no cover
 
 
 class String(BaseType):
@@ -81,10 +81,10 @@ class Integer(BaseType):
     """Integer type."""
     def convert(self, val):
         if isinstance(val, six.integer_types):
-            return True
+            return val
 
-        if isinstance(val, _all_string_types):
-            return val.isdigit()
+        if isinstance(val, _all_string_types) and val.isdigit():
+            return int(val)
         raise MismatchError(val)
 
 
@@ -110,17 +110,20 @@ class Decimal(BaseType):
             raise MismatchError(e.message)
 
 
-class Date(BaseType):
-    def __init__(self, format="%Y-%m-%d"):
+class Datetime(BaseType):
+    def __init__(self, format="%Y-%m-%d %H:%M:%S"):
         self.format = format
 
     def convert(self, val):
         try:
-            return datetime.strptime(val, self.format).date()
+            return datetime.strptime(val, self.format)
         except ValueError as e:
             raise MismatchError(e.message)
 
 
-class Datetime(Date):
-    def __init__(self, format="%Y-%m-%d %H:%M:%S"):
-        self.format = format
+class Date(Datetime):
+    def __init__(self, format="%Y-%m-%d"):
+        super(Date, self).__init__(format)
+
+    def convert(self, val):
+        return super(Date, self).convert(val).date()
