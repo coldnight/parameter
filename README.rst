@@ -47,7 +47,7 @@ Without parameter
 With `parameter`
 -----------------
 
-.. codeblock:: python
+.. code:: python
 
     from tornado import web
 
@@ -85,7 +85,7 @@ Installation
 
 Use pip to install:
 
-.. codeblock:: shell
+.. code:: shell
 
     $ pip install parameter
 
