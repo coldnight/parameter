@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/coldnight/modcov.svg?branch=master)](https://travis-ci.org/coldnight/parameter)
+[![Code Coverage](https://codecov.io/github/coldnight/modcov/coverage.svg?branch=master)](https://codecov.io/gh/coldnight/parameter)
+
 # Parameter
 
 像使用 ORM 一样定义和检查 HTTP 参数.
