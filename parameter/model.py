@@ -14,7 +14,44 @@ from .exception import ConvertError, ArgumentMissError, ArgumentInvalidError
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseAdapter(object):
+    """To implement your own adapter, you need inherit from
+    :class:`~parameter.model.BaseAdapter`.
 
+    There two methods must be overwirtten:
+
+    - ``get_argument``: Returns a single value
+    - ``get_arguments``: Returns a sequence of values.
+
+    Example::
+
+        from parameter.model import BaseAdapter
+
+
+        class DemoAdapter(BaseAdapter):
+            "demo adapter"
+            def __init__(self, arguments):
+                self.arguments = arguments
+
+            def get_argument(self, name, default):
+                return self.arguments.get(name, default)
+
+            def get_arguments(self, name):
+                return self.arguments.getlist(name)
+
+    If you want your adapter to support nested, you need to override
+    the ``spawn`` method, this method use the given value to return an new
+    instance of the current adapter.
+
+    ::
+
+        from parameter.model import BaseAdapter
+
+
+        class DemoAdapter(BaseAdapter):
+            # see above
+            def spawn(self, arguments):
+                return DemoAdapter(arguments)
+    """
     @abc.abstractmethod
     def get_argument(self, name, default, *args, **kwargs):
         """Returns the argument's value via ``name``.
