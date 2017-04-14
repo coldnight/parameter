@@ -8,7 +8,7 @@
     :target: https://pypi.python.org/pypi/parameter
     :alt: PyPI
 .. image:: https://readthedocs.org/projects/parameter/badge/?version=latest
-    :target: http://parameter.readthedocs.io/en/latest/?badge=latest
+    :target: https://parameter.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 Parameter
@@ -38,5 +38,5 @@ Documentation
 ----------------
 
 .. image:: https://readthedocs.org/projects/parameter/badge/?version=latest
-    :target: http://parameter.readthedocs.io/en/latest/?badge=latest
+    :target: https://parameter.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
