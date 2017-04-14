@@ -1,6 +1,15 @@
 Guide
 =====
 
+Installation
+-------------
+
+Use pip to install parameter.
+
+.. code:: shell
+
+    $ pip install -U parameter
+
 Define model
 -------------
 
