@@ -1,6 +1,61 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-"""The types module provides classes of argument types."""
+"""
+
+Add custom type
+---------------
+
+If you want add your own type, you need inherit from
+:class:`~parameter.types.BaseType` and override the abstract method
+``convert``. It used to convert an raw value from request to the current
+type.
+
+
+Here is an example::
+
+    from parameter.types import BaseType
+
+
+    class CVSList(BaseType):
+        def convert(self, val):
+            return val.split(",")
+
+The above type receive a string value, and returns a list that split by
+comma.
+
+Then you can use the type you have defined.
+
+::
+
+    from parameter import Model, Argument
+
+    class DemoEntity(Model):
+        names = Argument("names", CVSList)
+
+If you want some custom options, you can define the constructor method.
+
+
+::
+
+    from parameter.types import BaseType
+
+
+    class CVSList(BaseType):
+        def __init__(self, separator=","):
+            self.separator = separator
+
+        def convert(self, val):
+            return val.split(self.separator)
+
+The you can define a different separator.
+
+::
+
+    from parameter import Model, Argument
+
+    class DemoEntity(Model):
+        names = Argument("names", CVSList(separator="|"))
+"""
 from __future__ import print_function, division, unicode_literals
 
 import abc
@@ -19,61 +74,12 @@ _all_string_types = six.string_types + (six.binary_type, six.text_type)
 
 @six.add_metaclass(abc.ABCMeta)
 class BaseType(object):
-    """If you want add your own type, you need inherit from
-    :class:`~parameter.types.BaseType` and override the abstract method
-    ``convert``. It used to convert an raw value from request to the current
-    type.
-
-
-    Here is an example::
-
-        from parameter.types import BaseType
-
-
-        class CVSList(BaseType):
-            def convert(self, val):
-                return val.split(",")
-
-    The above type receive a string value, and returns a list that split by
-    comma.
-
-    Then you can use the type you have defined.
-
-    ::
-
-        from parameter import Model, Argument
-
-        class DemoEntity(Model):
-            names = Argument("names", CVSList)
-
-    If you want some custom options, you can define the constructor method.
-
-
-    ::
-        from parameter.types import BaseType
-
-
-        class CVSList(BaseType):
-            def __init__(self, separator=","):
-                self.separator = separator
-
-            def convert(self, val):
-                return val.split(self.separator)
-
-    The you can define a different separator.
-
-    ::
-
-        from parameter import Model, Argument
-
-        class DemoEntity(Model):
-            names = Argument("names", CVSList(separator="|"))
-    """
+    """Base class of the types."""
     @abc.abstractmethod
     def convert(self, val):
         """Convert a value to this type.
 
-        :raises: :exception:`parameter.exception.MismatchError`
+        :raises: :class:`parameter.exception.MismatchError`
         """
         pass    # pragma: no cover
 

@@ -58,8 +58,8 @@ class BaseAdapter(object):
 
         :param name: The name of the argument.
         :param default: The default value.
-        :raises: :exception:`~parameter.exception.ArgumentMissError`
-        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
+        :raises: :class:`~parameter.exception.ArgumentMissError`
+        :raises: :class:`~parameter.exception.ArgumentInvalidError`
         """
 
     @abc.abstractmethod
@@ -67,8 +67,8 @@ class BaseAdapter(object):
         """Returns the argument's values via ``name``.
 
         :param name: The name of the argument.
-        :raises: :exception:`~parameter.exception.ArgumentMissError`
-        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
+        :raises: :class:`~parameter.exception.ArgumentMissError`
+        :raises: :class:`~parameter.exception.ArgumentInvalidError`
         """
 
     @staticmethod
@@ -97,10 +97,10 @@ class Argument(object):
         :param multiple: This argument have multiple values.
         :param miss_message:
             The message of
-            :exception:`~parameter.exception.ArgumentMissError`
+            :class:`~parameter.exception.ArgumentMissError`
         :param invalid_message:
             The message of
-            :exception:`~parameter.exception.ArgumentInvalidError`
+            :class:`~parameter.exception.ArgumentInvalidError`
         """
         self.name = name
         self.type_ = type_() if inspect.isclass(type_) else type_
@@ -117,8 +117,8 @@ class Argument(object):
     def convert(self, value):
         """Check and convert the value to the specified type.
 
-        :raises: :exception:`~parameter.exception.ArgumentMissError`
-        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
+        :raises: :class:`~parameter.exception.ArgumentMissError`
+        :raises: :class:`~parameter.exception.ArgumentInvalidError`
         """
         if self.is_init_default(value):
             raise ArgumentMissError(self.miss_message, self.name)

@@ -12,7 +12,9 @@ from .exception import ArgumentInvalidError
 
 
 class TornadoAdapter(BaseAdapter):
-    """Tornado adapter, usage::
+    """Tornado adapter.
+
+    Usage::
 
         from tornado import web
 
