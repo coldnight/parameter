@@ -4,6 +4,7 @@
 from __future__ import print_function, division, unicode_literals
 
 import json
+import unittest
 
 try:
     from urllib import urlencode
@@ -15,7 +16,7 @@ from tornado import web
 
 from parameter import Model, Argument, types
 from parameter import ArgumentMissError, ArgumentInvalidError
-from parameter.adapter import TornadoAdapter
+from parameter.adapter import TornadoAdapter, JSONAdapter
 
 
 class UserEntity(Model):
@@ -108,3 +109,93 @@ class TornadoAdapterTestCase(testing.AsyncHTTPTestCase):
             "name": "Gray",
             "badges": ["1", "2"]
         })
+
+
+class DemoEntity(Model):
+    a = Argument("a", types.Integer)
+    b = Argument("b", types.Integer)
+
+
+class JSONAdapterTestCase(unittest.TestCase):
+    def test_binary_string(self):
+        adapter = JSONAdapter(b'{"a": 1, "b": 2}')
+
+        entity = DemoEntity(adapter)
+
+        self.assertEqual(entity.a, 1)
+        self.assertEqual(entity.b, 2)
+
+    def test_text_string(self):
+        adapter = JSONAdapter('{"a": 1, "b": 2}')
+
+        entity = DemoEntity(adapter)
+
+        self.assertEqual(entity.a, 1)
+        self.assertEqual(entity.b, 2)
+
+    def test_dict(self):
+        adapter = JSONAdapter({"a": 1, "b": 2})
+
+        entity = DemoEntity(adapter)
+
+        self.assertEqual(entity.a, 1)
+        self.assertEqual(entity.b, 2)
+
+    def test_not_dict(self):
+        with self.assertRaises(TypeError):
+            JSONAdapter([])
+
+    def test_nested(self):
+        class NestedEntity(Model):
+            demo = Argument("demo", types.Nested(DemoEntity))
+            c = Argument("c", types.Integer)
+
+        adapter = JSONAdapter({"demo": {"a": 1, "b": 2}, "c": 3})
+        entity = NestedEntity(adapter)
+
+        self.assertEqual(entity.c, 3)
+        self.assertEqual(entity.demo.a, 1)
+        self.assertEqual(entity.demo.b, 2)
+
+    def test_multiple_nested(self):
+        class NestedEntity(Model):
+            demos = Argument("demo", types.Nested(DemoEntity), multiple=True)
+            c = Argument("c", types.Integer)
+
+        adapter = JSONAdapter({"demo": [
+            {"a": 1, "b": 2},
+            {"a": 4, "b": 5}
+        ], "c": 3})
+        entity = NestedEntity(adapter)
+
+        self.assertEqual(entity.c, 3)
+        self.assertEqual(entity.demos[0].a, 1)
+        self.assertEqual(entity.demos[0].b, 2)
+
+        self.assertEqual(entity.demos[1].a, 4)
+        self.assertEqual(entity.demos[1].b, 5)
+
+    def test_multiple_nested_type_error(self):
+        class NestedEntity(Model):
+            demos = Argument("demo", types.Nested(DemoEntity), multiple=True)
+            c = Argument("c", types.Integer)
+
+        adapter = JSONAdapter({"demo": {"a": 1, "b": 2}, "c": 3})
+
+        with self.assertRaises(ArgumentInvalidError):
+            NestedEntity(adapter)
+
+    def test_nested_model_cls_type_error(self):
+        with self.assertRaises(TypeError):
+            class NestedEntity(Model):
+                demos = Argument("demo", types.Nested([]), multiple=True)
+                c = Argument("c", types.Integer)
+
+    def test_nested_model_cls_value_error(self):
+        class T(object):
+            pass
+
+        with self.assertRaises(ValueError):
+            class NestedEntity(Model):
+                demos = Argument("demo", types.Nested(T), multiple=True)
+                c = Argument("c", types.Integer)

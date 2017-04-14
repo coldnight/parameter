@@ -5,6 +5,7 @@ from __future__ import print_function, division, unicode_literals
 
 import abc
 import decimal
+import inspect
 
 from datetime import datetime
 
@@ -122,3 +123,31 @@ class Date(Datetime):
 
     def convert(self, val):
         return super(Date, self).convert(val).date()
+
+
+class Nested(BaseType):
+    def __init__(self, model_cls):
+        """Initialize
+
+        :param model_cls: Subclass of :class:`~parameter.model.Model`
+        """
+        from .model import Model
+
+        if not inspect.isclass(model_cls):
+            raise TypeError(
+                "``model_cls`` except a class, but got %r." % model_cls)
+
+        if not issubclass(model_cls, Model):
+            raise ValueError(
+                "``model_cls`` except a class which subclasses of ``Model`, "
+                "but got %r." % model_cls)
+
+        self.model_cls = model_cls
+
+    def convert(self, adapter):
+        """Returns an instance which subclasses :class:`~parameter.model.Model`
+
+        :param adapter: Adapter of the hosted model.
+        :type adapter: :class:`~parameter.model.BaseAdapter`
+        """
+        return self.model_cls(adapter)

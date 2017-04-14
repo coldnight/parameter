@@ -8,6 +8,7 @@ import inspect
 
 import six
 
+from .types import Nested
 from .exception import ConvertError, ArgumentMissError, ArgumentInvalidError
 
 
@@ -32,6 +33,12 @@ class BaseAdapter(object):
         :raises: :exception:`~parameter.exception.ArgumentMissError`
         :raises: :exception:`~parameter.exception.ArgumentInvalidError`
         """
+
+    @staticmethod
+    def spawn(val):
+        """Use the new value to spawn an new adapter of this adapter.
+        """
+        raise NotImplementedError()
 
 
 class Argument(object):
@@ -112,14 +119,26 @@ class Model(object):
         """
         self.adapter = adapter
         self._arguments = {}
+        self._init()
 
+    def _attempt_construct_adapter(self, arg, val):
+        """Attempt construct an instance which subclasses :class:`~BaseAdapter`
+        if the type of arg's is :class:`~parameter.types.Nested`.
+        """
+        if isinstance(arg.type_, Nested):
+            return self.adapter.spawn(val)
+        return val
+
+    def _init(self):
+        """Initialize arguments"""
         for attr, arg in self._meta_arguments:
             if arg.multiple:
                 val = self.adapter.get_arguments(arg.name)
-                val = [arg.convert(v) for v in val]
+                val = [arg.convert(self._attempt_construct_adapter(arg, v))
+                       for v in val]
             else:
                 val = self.adapter.get_argument(arg.name, arg.default)
-                val = arg.convert(val)
+                val = arg.convert(self._attempt_construct_adapter(arg, val))
 
             self._arguments[attr] = val
 
