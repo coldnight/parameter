@@ -132,7 +132,7 @@ List nested
 Handling exception
 -------------------
 
-While create model, there two exceptions user must to care:
+While creating model, there two exceptions that user must to care:
 
 * :class:`parameter.exception.ArgumentMissError`: Raising when argument is missing
 * :class:`parameter.exception.ArgumentInvalidError`: Raising when argument is invalid
