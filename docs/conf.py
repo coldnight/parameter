@@ -128,15 +128,28 @@ todo_include_todos = False
 #
 html_theme = 'alabaster'
 
+html_sidebars = {
+    "**": [
+        "about.html",
+        "navigation.html",
+        "searchbox.html",
+        "donate.html",
+    ]
+}
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    "description": "Get and check HTTP parameters like use ORM.",
-    "github_user": "coldnight",
-    "github_repo": "parameter",
+    "description": u"Get and check HTTP parameters like use ORM.",
+    "github_user": u"coldnight",
+    "github_repo": u"parameter",
+    "fixed_sidebar": True,
+    "github_banner": True,
+    "github_button": True,
     "travis_button": True,
+    "codecov_button": True,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
