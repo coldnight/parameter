@@ -36,6 +36,10 @@ class _TestAdapter(BaseAdapter):
 
 
 class ModelTestCase(unittest.TestCase):
+    def test_spwan_not_implemented(self):
+        with self.assertRaises(NotImplementedError):
+            BaseAdapter.spawn(None)
+
     def test_string(self):
         class _TestModel(Model):
             bt = Argument("bytes", types.String)
