@@ -6,7 +6,7 @@
 Welcome to parameter's documentation!
 =====================================
 
-`Parameter <https://github.com/coldnight/parameter>`_ is use to get and check HTTP parameters like use ORM.
+`Parameter <https://github.com/coldnight/parameter>`_ is using to get and check HTTP parameters like use ORM.
 
 
 Benefits
