@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     "sphinx.ext.extlinks",
+    "alabaster",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -131,7 +132,12 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    "description": "Get and check HTTP parameters like use ORM.",
+    "github_user": "coldnight",
+    "github_repo": "parameter",
+    "travis_button": True,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
