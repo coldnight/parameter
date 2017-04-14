@@ -3,8 +3,8 @@
 """Reexport"""
 from __future__ import print_function, division, unicode_literals
 
-from .model import (Model, Argument, BaseAdapter, ArgumentError,
-                    ArgumentMissError, ArgumentInvalidError)
+from .model import Model, Argument, BaseAdapter
+from .exception import ArgumentError, ArgumentMissError, ArgumentInvalidError
 
 
 __version__ = "0.0.1"

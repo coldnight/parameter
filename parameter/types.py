@@ -10,21 +10,10 @@ from datetime import datetime
 
 import six
 
+from .exception import MismatchError, MaxlenExceedError
+
 
 _all_string_types = six.string_types + (six.binary_type, six.text_type)
-
-
-class ConvertError(Exception):
-    pass
-
-
-class MismatchError(ConvertError):
-    """Type mismatch."""
-    pass
-
-
-class MaxlenExceedError(ConvertError):
-    pass
 
 
 class BaseType(object):
@@ -34,7 +23,7 @@ class BaseType(object):
     def convert(self, val):
         """Convert a value to this type.
 
-        :raises: :exception:`MismatchError`
+        :raises: :exception:`parameter.exception.MismatchError`
         """
         pass    # pragma: no cover
 

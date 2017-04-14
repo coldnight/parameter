@@ -8,35 +8,7 @@ import inspect
 
 import six
 
-from .types import ConvertError
-
-
-class ArgumentError(Exception):
-    """Argument base Exception"""
-    def __init__(self, message, name):
-        """Initialize
-
-        :param message: Invalid message.
-        :param name: Argument name.
-        """
-        super(ArgumentError, self).__init__(message)
-        self.name = name
-
-
-class ArgumentMissError(ArgumentError):
-    pass
-
-
-class ArgumentInvalidError(ArgumentError):
-    def __init__(self, message, name, source):
-        """Initialize
-
-        :param message: Invalid message.
-        :param name: Argument name.
-        :param source: Source exception.
-        """
-        super(ArgumentInvalidError, self).__init__(message, name)
-        self.source = source
+from .exception import ConvertError, ArgumentMissError, ArgumentInvalidError
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -48,8 +20,8 @@ class BaseAdapter(object):
 
         :param name: The name of the argument.
         :param default: The default value.
-        :raises: :exception:`ArgumentMissError`
-        :raises: :exception:`ArgumentInvalidError`
+        :raises: :exception:`~parameter.exception.ArgumentMissError`
+        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
         """
 
     @abc.abstractmethod
@@ -57,8 +29,8 @@ class BaseAdapter(object):
         """Returns the argument's values via ``name``.
 
         :param name: The name of the argument.
-        :raises: :exception:`ArgumentMissError`
-        :raises: :exception:`ArgumentInvalidError`
+        :raises: :exception:`~parameter.exception.ArgumentMissError`
+        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
         """
 
 
@@ -80,9 +52,11 @@ class Argument(object):
         :param default: The default value.
         :param multiple: This argument have multiple values.
         :param miss_message:
-            The message of :exception:`ArgumentMissError`
+            The message of
+            :exception:`~parameter.exception.ArgumentMissError`
         :param invalid_message:
-            The message of :exception:`ArgumentInvalidError`
+            The message of
+            :exception:`~parameter.exception.ArgumentInvalidError`
         """
         self.name = name
         self.type_ = type_() if inspect.isclass(type_) else type_
@@ -99,8 +73,8 @@ class Argument(object):
     def convert(self, value):
         """Check and convert the value to the specified type.
 
-        :raises: :exception:`ArgumentMissError`
-        :raises: :exception:`ArgumentInvalidError`
+        :raises: :exception:`~parameter.exception.ArgumentMissError`
+        :raises: :exception:`~parameter.exception.ArgumentInvalidError`
         """
         if self.is_init_default(value):
             raise ArgumentMissError(self.miss_message, self.name)
