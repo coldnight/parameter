@@ -61,11 +61,11 @@ Parameter pattern
 
 
     class DemoEntity(Model):
-        action = Argument("action", types.String, required=False,
+        action = Argument(types.String, required=False,
                           miss_message="Please choose action", 
                           invalid_message="Invalid action")
-        arg1 = Argument("arg1", types.Integer)
-        arg2 = Argument("arg2", types.Double)
+        arg1 = Argument(types.Integer)
+        arg2 = Argument(types.Double)
         # ...
 
 

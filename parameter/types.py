@@ -30,7 +30,7 @@ Then you can use the type you have defined.
     from parameter import Model, Argument
 
     class DemoEntity(Model):
-        names = Argument("names", CVSList)
+        names = Argument(CVSList)
 
 If you want some custom options, you can define the constructor method.
 
@@ -54,7 +54,7 @@ The you can define a different separator.
     from parameter import Model, Argument
 
     class DemoEntity(Model):
-        names = Argument("names", CVSList(separator="|"))
+        names = Argument(CVSList(separator="|"))
 """
 from __future__ import print_function, division, unicode_literals
 

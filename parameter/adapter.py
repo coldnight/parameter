@@ -23,10 +23,10 @@ class TornadoAdapter(BaseAdapter):
 
 
         class UserEntity(Model):
-            username = Argument("username", types.String, max_len=100)
-            password = Argument("password", types.String, max_len=64)
-            name = Argument("name", types.Unicode, max_len=50)
-            arg = Argument("age", types.Integer, default=18)
+            username = Argument(types.String, max_len=100)
+            password = Argument(types.String, max_len=64)
+            name = Argument(types.Unicode, max_len=50)
+            arg = Argument(types.Integer, default=18)
 
 
         class DemoHandler(web.RequestHandler):
@@ -66,8 +66,8 @@ class JSONAdapter(BaseAdapter):
         data = {"a": 1, "b": 2}
 
         class DataEntity(Model):
-            a = Argument("a", types.Integer)
-            b = Argument("b", types.Integer)
+            a = Argument(types.Integer)
+            b = Argument(types.Integer)
 
         adapter = JSONAdapter(data)
         entity = DataEntity(adapter)
@@ -84,13 +84,13 @@ class JSONAdapter(BaseAdapter):
         data = {"a": 1, "b": 2, "person": {"age": 18, "name": "Gray"}}
 
         class PersonEntity(Model):
-            are = Argument("age", types.Integer)
-            name = Argument("name", types.Unicode)
+            are = Argument(types.Integer)
+            name = Argument(types.Unicode)
 
         class DataEntity(Model):
-            a = Argument("a", types.Integer)
-            b = Argument("b", types.Integer)
-            person = Argument("person", types.Nested(PersonEntity))
+            a = Argument(types.Integer)
+            b = Argument(types.Integer)
+            person = Argument(types.Nested(PersonEntity))
 
         adapter = JSONAdapter(data)
         entity = DataEntity(adapter)
