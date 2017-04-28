@@ -7,7 +7,7 @@ from .model import Model, Argument, BaseAdapter
 from .exception import ArgumentError, ArgumentMissError, ArgumentInvalidError
 
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 __all__ = ["ArgumentError", "ArgumentMissError", "ArgumentInvalidError",
