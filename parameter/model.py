@@ -83,17 +83,17 @@ class Argument(object):
 
     _DEFAULT = []       # type: list
 
-    def __init__(self, name, type_, default=_DEFAULT, multiple=False,
+    def __init__(self, type_, default=_DEFAULT, alias=None, multiple=False,
                  miss_message=None, invalid_message=None):
         """Initialize
 
-        :param name:
-            The name of this argument as represented in the HTTP request.
         :param type_:
             The parameter's type, indicated using an instance which subclasses
             :class:`parameter.types.BaseType`.
         :type type_: :class:`parameter.types.BaseType`.
         :param default: The default value.
+        :param alias:
+            The alias name of this argument as represented in the HTTP request.
         :param multiple: This argument have multiple values.
         :param miss_message:
             The message of
@@ -102,7 +102,8 @@ class Argument(object):
             The message of
             :class:`~parameter.exception.ArgumentInvalidError`
         """
-        self.name = name
+        self.name = None
+        self.alias = alias
         self.type_ = type_() if inspect.isclass(type_) else type_
         self.default = default
         self.multiple = multiple
@@ -131,8 +132,21 @@ class Argument(object):
 
 class ModelMeta(type):
     def __new__(cls, name, base, __dict__):
-        arguments = [(attr, val) for attr, val in __dict__.items()
-                     if isinstance(val, Argument)]
+        arguments = []
+
+        for attr, val in __dict__.items():
+            if not isinstance(val, Argument):
+                continue
+
+            # If not specify alias for this argument, set argument's name
+            # to current attribute name.
+            if val.alias is None:
+                val.name = attr
+            else:
+                # Otherwise set to the alias that user specified
+                val.name = val.alias
+
+            arguments.append((attr, val))
         __dict__["_meta_arguments"] = arguments
 
         for key, _ in arguments:

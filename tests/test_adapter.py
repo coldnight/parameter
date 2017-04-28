@@ -20,15 +20,15 @@ from parameter.adapter import TornadoAdapter, JSONAdapter
 
 
 class UserEntity(Model):
-    username = Argument("username", types.String(max_len=100))
-    password = Argument("password", types.String(max_len=64))
-    name = Argument("name", types.Unicode(max_len=50))
-    age = Argument("age", types.Integer, default=18)
-    badges = Argument("badge", types.Unicode, multiple=True)
+    username = Argument(types.String(max_len=100))
+    password = Argument(types.String(max_len=64))
+    name = Argument(types.Unicode(max_len=50))
+    age = Argument(types.Integer, default=18)
+    badges = Argument(types.Unicode, multiple=True, alias="badge")
 
 
 class SingleArgEntity(Model):
-    username = Argument("username", types.String(max_len=100),
+    username = Argument(types.String(max_len=100),
                         miss_message="Require username")
 
 
@@ -112,8 +112,8 @@ class TornadoAdapterTestCase(testing.AsyncHTTPTestCase):
 
 
 class DemoEntity(Model):
-    a = Argument("a", types.Integer)
-    b = Argument("b", types.Integer)
+    a = Argument(types.Integer)
+    b = Argument(types.Integer)
 
 
 class JSONAdapterTestCase(unittest.TestCase):
@@ -147,8 +147,8 @@ class JSONAdapterTestCase(unittest.TestCase):
 
     def test_nested(self):
         class NestedEntity(Model):
-            demo = Argument("demo", types.Nested(DemoEntity))
-            c = Argument("c", types.Integer)
+            demo = Argument(types.Nested(DemoEntity))
+            c = Argument(types.Integer)
 
         adapter = JSONAdapter({"demo": {"a": 1, "b": 2}, "c": 3})
         entity = NestedEntity(adapter)
@@ -159,8 +159,9 @@ class JSONAdapterTestCase(unittest.TestCase):
 
     def test_multiple_nested(self):
         class NestedEntity(Model):
-            demos = Argument("demo", types.Nested(DemoEntity), multiple=True)
-            c = Argument("c", types.Integer)
+            demos = Argument(types.Nested(DemoEntity), multiple=True,
+                             alias="demo")
+            c = Argument(types.Integer)
 
         adapter = JSONAdapter({"demo": [
             {"a": 1, "b": 2},
@@ -177,8 +178,8 @@ class JSONAdapterTestCase(unittest.TestCase):
 
     def test_multiple_nested_type_error(self):
         class NestedEntity(Model):
-            demos = Argument("demo", types.Nested(DemoEntity), multiple=True)
-            c = Argument("c", types.Integer)
+            demos = Argument(types.Nested(DemoEntity), multiple=True)
+            c = Argument(types.Integer)
 
         adapter = JSONAdapter({"demo": {"a": 1, "b": 2}, "c": 3})
 
@@ -188,8 +189,8 @@ class JSONAdapterTestCase(unittest.TestCase):
     def test_nested_model_cls_type_error(self):
         with self.assertRaises(TypeError):
             class NestedEntity(Model):
-                demos = Argument("demo", types.Nested([]), multiple=True)
-                c = Argument("c", types.Integer)
+                demos = Argument(types.Nested([]), alias="demo", multiple=True)
+                c = Argument(types.Integer)
 
     def test_nested_model_cls_value_error(self):
         class T(object):
@@ -197,5 +198,5 @@ class JSONAdapterTestCase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             class NestedEntity(Model):
-                demos = Argument("demo", types.Nested(T), multiple=True)
-                c = Argument("c", types.Integer)
+                demos = Argument(types.Nested(T), alias="demo", multiple=True)
+                c = Argument(types.Integer)

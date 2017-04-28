@@ -17,7 +17,7 @@ class _TestAdapter(BaseAdapter):
         self._info = {                             # type: dict
             "string": b"test",
             "unicode": "string",
-            "string_integer": "1",
+            "string_int": "1",
             "integer": 10,
             "string_double": "10.1",
             "double": 10.1,
@@ -33,15 +33,15 @@ class _TestAdapter(BaseAdapter):
 
 
 class _TestModel(Model):
-    string = Argument("string", types.String)
-    unicode_ = Argument("unicode", types.Unicode)
-    string_int = Argument("string_integer", types.Integer)
-    integer = Argument("integer", types.Integer)
-    string_double = Argument("string_double", types.Double)
-    double = Argument("double", types.Double)
-    decimal = Argument("string_double", types.Decimal)
-    date = Argument("date", types.Date)
-    datetime = Argument("datetime", types.Datetime)
+    string = Argument(types.String)
+    unicode_ = Argument(types.Unicode, alias="unicode")
+    string_int = Argument(types.Integer)
+    integer = Argument(types.Integer)
+    string_double = Argument(types.Double)
+    double = Argument(types.Double)
+    decimal = Argument(types.Decimal, alias="string_double")
+    date = Argument(types.Date)
+    datetime = Argument(types.Datetime)
 
 
 class TypesTestCase(unittest.TestCase):
@@ -61,14 +61,14 @@ class TypesTestCase(unittest.TestCase):
 
     def test_integer_mismatch(self):
         class _Model(Model):
-            integer = Argument("string", types.Integer)
+            integer = Argument(types.Integer, alias="string")
 
         with self.assertRaises(ArgumentInvalidError):
             _Model(_TestAdapter())
 
     def test_double_mismatch(self):
         class _Model(Model):
-            integer = Argument("string", types.Double)
+            integer = Argument(types.Double, alias="string")
 
         with self.assertRaises(ArgumentInvalidError):
             _Model(_TestAdapter())
@@ -82,7 +82,7 @@ class TypesTestCase(unittest.TestCase):
 
     def test_decimal_mismatch(self):
         class _Model(Model):
-            integer = Argument("string", types.Decimal)
+            integer = Argument(types.Decimal, alias="string")
 
         with self.assertRaises(ArgumentInvalidError):
             _Model(_TestAdapter())
@@ -96,7 +96,7 @@ class TypesTestCase(unittest.TestCase):
 
     def test_datetime_mismatch(self):
         class _Model(Model):
-            integer = Argument("string", types.Datetime)
+            integer = Argument(types.Datetime, alias="string")
 
         with self.assertRaises(ArgumentInvalidError):
             _Model(_TestAdapter())

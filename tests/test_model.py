@@ -12,7 +12,7 @@ from parameter import BaseAdapter, ArgumentMissError
 class _TestAdapter(BaseAdapter):
     def __init__(self):
         self._info = {                             # type: dict
-            "bytes": b"test",
+            "byte": b"test",
             "string": "string",
             "string_integer": "1",
             "integer": 10,
@@ -42,39 +42,39 @@ class ModelTestCase(unittest.TestCase):
 
     def test_string(self):
         class _TestModel(Model):
-            bt = Argument("bytes", types.String)
+            byte = Argument(types.String)
 
         model = _TestModel(_TestAdapter())
-        self.assertEqual(model.bt, b"test")
+        self.assertEqual(model.byte, b"test")
 
         class _TestModel(Model):
-            bt = Argument("string", types.String)
+            string = Argument(types.String)
 
         model = _TestModel(_TestAdapter())
-        self.assertEqual(model.bt, b"string")
+        self.assertEqual(model.string, b"string")
 
     def test_unicode(self):
         class _TestModel(Model):
-            bt = Argument("bytes", types.Unicode)
+            byte = Argument(types.Unicode)
 
         model = _TestModel(_TestAdapter())
-        self.assertEqual(model.bt, "test")
+        self.assertEqual(model.byte, "test")
 
         class _TestModel(Model):
-            bt = Argument("string", types.Unicode)
+            string = Argument(types.Unicode)
 
         model = _TestModel(_TestAdapter())
-        self.assertEqual(model.bt, "string")
+        self.assertEqual(model.string, "string")
 
     def test_max_len(self):
         class _TestModel(Model):
-            bt = Argument("bytes", types.Unicode(max_len=4))
+            byte = Argument(types.Unicode(max_len=4))
 
         model = _TestModel(_TestAdapter())
-        self.assertEqual(model.bt, "test")
+        self.assertEqual(model.byte, "test")
 
         class _TestModel(Model):
-            bt = Argument("bytes", types.Unicode(max_len=3))
+            byte = Argument(types.Unicode(max_len=3))
 
         with self.assertRaises(ArgumentInvalidError):
             _TestModel(_TestAdapter())
@@ -86,22 +86,21 @@ class ModelTestCase(unittest.TestCase):
 
     def test_miss(self):
         class _TestModel(Model):
-            null = Argument("null", types.Unicode(max_len=4))
+            null = Argument(types.Unicode(max_len=4))
 
         with self.assertRaises(ArgumentMissError):
             _TestModel(_TestAdapter())
 
     def test_default(self):
         class _TestModel(Model):
-            null = Argument("null", types.Unicode(max_len=4), default=1)
+            null = Argument(types.Unicode(max_len=4), default=1)
 
         model = _TestModel(_TestAdapter())
         self.assertEqual(model.null, "1", "%r" % model)
 
     def test_multiple(self):
         class _TestModel(Model):
-            multi = Argument("test", types.Unicode(max_len=4), default=1,
-                             multiple=True)
+            test = Argument(types.Unicode(max_len=4), default=1, multiple=True)
 
         model = _TestModel(_TestAdapter())
-        self.assertListEqual(model.multi, ["a", "b", "c"])
+        self.assertListEqual(model.test, ["a", "b", "c"])

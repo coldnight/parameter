@@ -22,8 +22,8 @@ a model.
     from parameter import types
 
     class Person(Model):
-        name = Argument("name", types.String)
-        age = Argument("age", types.Integer)
+        name = Argument(types.String)
+        age = Argument(types.Integer)
 
 
 After model defined, you can use an adapter to create a instance.
@@ -39,10 +39,26 @@ After model defined, you can use an adapter to create a instance.
     print(person.age)       # output: 18
 
 
+Alias
+------
+
+If a parameter's name is not same with the attribute name, we can use ``alias``.
+
+.. code:: python
+
+    from parameter import Model, Argument
+    from parameter import types
+
+    class Person(Model):
+        children = Argument(types.String, alias="child", multiple=True)
+
+
+The above code will map ``child`` argument to the ``children``.
+
 List
 ----
 
-If an parameter have mulitple arguments, just set ``mulitple=True`` in :class:`~parameter.model.Argument`.
+If a parameter have mulitple arguments, just set ``mulitple=True`` in :class:`~parameter.model.Argument`.
 
 
 .. code:: python
@@ -51,9 +67,9 @@ If an parameter have mulitple arguments, just set ``mulitple=True`` in :class:`~
     from parameter import types
 
     class Person(Model):
-        name = Argument("name", types.String)
-        age = Argument("age", types.Integer)
-        children = Argument("child", types.String, multiple=True)
+        name = Argument(types.String)
+        age = Argument(types.Integer)
+        children = Argument(types.String, alias="child", multiple=True)
 
     # Assume the request is: /person?name=Gray&age=18&child=Tom&child=Jim
     person = Person(DemoAdapter(request))
@@ -75,12 +91,12 @@ Nested
     from parameter.adapter import JSONAdapter
 
     class Person(Model):
-        name = Argument("name", types.String)
-        age = Argument("age", types.Integer)
+        name = Argument(types.String)
+        age = Argument(types.Integer)
 
     class Computer(Model):
-        arch = Argument("arch", types.String)
-        belong = Argument("belong", types.Nested(Person))
+        arch = Argument(types.String)
+        belong = Argument(types.Nested(Person))
 
 
     computer = Computer(JSONAdapter({"arch": "x86", "belong": {"name": "Gray", "age": 10}}))
@@ -104,13 +120,13 @@ List nested
 
 
     class Computer(Model):
-        arch = Argument("arch", types.String)
+        arch = Argument(types.String)
 
 
     class Person(Model):
-        name = Argument("name", types.String)
-        age = Argument("age", types.Integer)
-        computers = Argument("computers", types.Nested(Computer), multiple=True)
+        name = Argument(types.String)
+        age = Argument(types.Integer)
+        computers = Argument(types.Nested(Computer), multiple=True)
 
 
     person = Person(JSONAdapter({"name": "Gray", "age": 10, "computers": [
